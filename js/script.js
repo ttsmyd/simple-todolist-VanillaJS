@@ -1,5 +1,24 @@
 class UI {
 
+    showItems() {
+        const storage = storage.getAllInfo();
+        storage.forEach(function (albumItem) {
+            UI.addItemToTheList(albumItem);
+        });
+    }
+
+    static addItemToTheList(albumItem) {
+        const listOfItems = document.querySelector('#album-list');
+        console.log(listOfItems);
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${albumItem.artistValue}</td>
+            <td>${albumItem.albumValue}</td>
+            <td>${albumItem.link}</td>
+        `;
+
+        listOfItems.appendChild(row);
+    }
 }
 
 class AlbumItem {
@@ -51,6 +70,7 @@ class Storage {
 }
 
 let storage = new Storage();
+let userInterface = new UI();
 let musicForm = document.getElementById('music-form');
 
 musicForm.addEventListener('submit', function (e) {
@@ -62,5 +82,6 @@ musicForm.addEventListener('submit', function (e) {
     const albumItem = new AlbumItem(artistInput, albumInput, linkInput);
 
     storage.addItem(albumItem);
+    UI.addItemToTheList(albumItem);
 });
 

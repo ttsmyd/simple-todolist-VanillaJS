@@ -1,23 +1,34 @@
 class UI {
 
-    showItems() {
-        const storage = storage.getAllInfo();
-        storage.forEach(function (albumItem) {
-            UI.addItemToTheList(albumItem);
+    static showCurrentItems() {
+        const elementsToView = storage.getAllStorageInfo();
+        if (elementsToView.length > 0) {
+        elementsToView.forEach(function (item) {
+            UI.addItemToTheList(item);
         });
+        }
     }
 
     static addItemToTheList(albumItem) {
         const listOfItems = document.querySelector('#album-list');
-        console.log(listOfItems);
         const row = document.createElement('tr');
+
+        const artistValue = albumItem.artistValue;
+        const albumValue = albumItem.albumValue;
+        const linkValue = albumItem.link;
         row.innerHTML = `
-            <td>${albumItem.artistValue}</td>
-            <td>${albumItem.albumValue}</td>
-            <td>${albumItem.link}</td>
+            <td>${artistValue}</td>
+            <td>${albumValue}</td>
+            <td>${linkValue}</td>
         `;
 
         listOfItems.appendChild(row);
+    }
+
+    static clearInputs() {
+        document.getElementById('artist').value = null;
+        document.getElementById('album').value = null;
+        document.getElementById('link').value = null;
     }
 }
 
@@ -51,37 +62,55 @@ class AlbumItem {
     set albumValue(value) {
         this._albumValue = value;
     };
+
+    get allAlbumInfo() {
+        return {
+            artistValue: this.artistValue,
+            albumValue: this._albumValue,
+            link: this._link
+        };
+    };
 }
 
 class Storage {
 
     constructor() {
-        this.infoStorage = [];
+        const lStorageInfo = localStorage.getItem('albums');
+        if (typeof lStorageInfo !== 'undefined' && lStorageInfo !== null) {
+            this.infoStorage = JSON.parse(lStorageInfo);
+        } else {
+            this.infoStorage = [];
+        }
     };
 
-    getAllInfo() {
+    getAllStorageInfo() {
         return this.infoStorage;
     };
 
     addItem(albumItem) {
-        this.infoStorage.push(albumItem);
-        alert(this.infoStorage);
+        this.infoStorage.push(albumItem.allAlbumInfo);
+        localStorage.setItem('albums', JSON.stringify(this.infoStorage));
     };
 }
 
 let storage = new Storage();
-let userInterface = new UI();
+UI.showCurrentItems();
+
 let musicForm = document.getElementById('music-form');
 
 musicForm.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    const artistInput = document.getElementById('artist').value;
-    const albumInput = document.getElementById('album').value;
-    const linkInput = document.getElementById('link').value;
+    let artistInput = document.getElementById('artist').value;
+    let albumInput = document.getElementById('album').value;
+    let linkInput = document.getElementById('link').value;
     const albumItem = new AlbumItem(artistInput, albumInput, linkInput);
 
     storage.addItem(albumItem);
     UI.addItemToTheList(albumItem);
+    UI.clearInputs();
+
 });
+
+
 

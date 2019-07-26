@@ -3,9 +3,9 @@ class UI {
     static showCurrentItems() {
         const elementsToView = storage.getAllStorageInfo();
         if (elementsToView.length > 0) {
-        elementsToView.forEach(function (item, numberOfElement) {
-            UI.addItemToTheList(item, numberOfElement);
-        });
+            elementsToView.forEach(function (item, numberOfElement) {
+                UI.addItemToTheList(item, numberOfElement);
+            });
         }
     }
 
@@ -20,8 +20,8 @@ class UI {
         row.innerHTML = `
             <td>${artistValue}</td>
             <td>${albumValue}</td>
-            <td>${linkValue}</td>
-            <button class="delete-button" id="${numberOfElement}"></button>
+            <td><a href="${linkValue}">Link</a></td>
+            <button class="delete-button" id="${numberOfElement}">Delete</button>
         `;
 
         listOfItems.appendChild(row);
@@ -111,15 +111,15 @@ class Storage {
     deleteItem(idOfItem) {
         this.infoStorage.splice(idOfItem, 1);
         console.log(this.infoStorage);
-
-        for (let i = idOfItem; i < this.infoStorage.length; i++) {
-
-        }
+        localStorage.setItem('albums', JSON.stringify(this.infoStorage));
     }
 }
 
 let storage = new Storage();
-UI.showCurrentItems();
+
+document.addEventListener('DOMContentLoaded', function () {
+    UI.showCurrentItems();
+})
 
 let musicForm = document.getElementById('music-form');
 let albumList = document.getElementById('album-list');
@@ -130,6 +130,11 @@ musicForm.addEventListener('submit', function (e) {
     let artistInput = document.getElementById('artist').value;
     let albumInput = document.getElementById('album').value;
     let linkInput = document.getElementById('link').value;
+    if(artistInput === '' && albumInput === '' && linkInput === '') {
+        alert('Please, enter correct information about album');
+        return;
+    }
+
     const albumItem = new AlbumItem(artistInput, albumInput, linkInput);
 
     UI.addItemToTheList(albumItem, storage.getAllStorageInfo().length);

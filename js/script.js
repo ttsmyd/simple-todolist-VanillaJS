@@ -3,23 +3,25 @@ class UI {
     static showCurrentItems() {
         const elementsToView = storage.getAllStorageInfo();
         if (elementsToView.length > 0) {
-        elementsToView.forEach(function (item) {
-            UI.addItemToTheList(item);
+        elementsToView.forEach(function (item, numberOfElement) {
+            UI.addItemToTheList(item, numberOfElement);
         });
         }
     }
 
-    static addItemToTheList(albumItem) {
+    static addItemToTheList(albumItem, numberOfElement) {
         const listOfItems = document.querySelector('#album-list');
         const row = document.createElement('tr');
 
         const artistValue = albumItem.artistValue;
         const albumValue = albumItem.albumValue;
         const linkValue = albumItem.link;
+        console.log(numberOfElement);
         row.innerHTML = `
             <td>${artistValue}</td>
             <td>${albumValue}</td>
             <td>${linkValue}</td>
+            <button class="delete-button" id="${numberOfElement}"></button>
         `;
 
         listOfItems.appendChild(row);
@@ -29,6 +31,20 @@ class UI {
         document.getElementById('artist').value = null;
         document.getElementById('album').value = null;
         document.getElementById('link').value = null;
+    }
+
+    static deleteItemView(button) {
+        const idOfItem = +button.getAttribute('id');
+        button.parentElement.remove();
+        let infoStorage = storage.getAllStorageInfo();
+        console.log('idOfItem');
+        console.log(idOfItem);
+
+
+        for (let i = idOfItem + 1; i < infoStorage.length; i++) {
+            document.querySelector(`[id="${i}"]`).id = i - 1;
+        }
+        console.log('kek');
     }
 }
 
@@ -91,12 +107,22 @@ class Storage {
         this.infoStorage.push(albumItem.allAlbumInfo);
         localStorage.setItem('albums', JSON.stringify(this.infoStorage));
     };
+
+    deleteItem(idOfItem) {
+        this.infoStorage.splice(idOfItem, 1);
+        console.log(this.infoStorage);
+
+        for (let i = idOfItem; i < this.infoStorage.length; i++) {
+
+        }
+    }
 }
 
 let storage = new Storage();
 UI.showCurrentItems();
 
 let musicForm = document.getElementById('music-form');
+let albumList = document.getElementById('album-list');
 
 musicForm.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -106,11 +132,23 @@ musicForm.addEventListener('submit', function (e) {
     let linkInput = document.getElementById('link').value;
     const albumItem = new AlbumItem(artistInput, albumInput, linkInput);
 
+    UI.addItemToTheList(albumItem, storage.getAllStorageInfo().length);
     storage.addItem(albumItem);
-    UI.addItemToTheList(albumItem);
+    // console.log('length ' + (storage.getAllStorageInfo().length + 1));
     UI.clearInputs();
-
 });
 
+albumList.addEventListener('click', function (e) {
+    console.log(e.target);
+    filterAlbumListButton(e.target);
+})
 
 
+function filterAlbumListButton(button) {
+    const typeOfButton = button.classList;
+    const idOfItem = button.getAttribute('id');
+    if (typeOfButton.contains('delete-button')) {
+        UI.deleteItemView(button);
+        storage.deleteItem(idOfItem);
+    }
+}

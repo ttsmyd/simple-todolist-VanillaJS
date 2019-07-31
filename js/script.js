@@ -57,7 +57,7 @@ class UI {
         let allButtons = document.querySelectorAll('.delete-button');
 
         for (let i = idOfItem; i < allButtons.length; i++) {
-            allButtons[i].id = i;
+            allButtons[i].id = `delete-button-${i}`;
         }
         console.log(document.querySelectorAll('.delete-button'));
         console.log(document.querySelectorAll('.delete-button').length);

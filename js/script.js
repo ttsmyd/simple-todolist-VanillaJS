@@ -19,25 +19,23 @@ class UI {
         console.log(numberOfElement);
         if (linkValue === '') {
             row.innerHTML = `
-            <tr class="something">
             <td>${artistValue}</td>
             <td>${albumValue}</td>
             <td></td>
             <button class="copy-button btn btn-outline-secondary" id="copy-button-${numberOfElement}">Copy Info</button>
             <button class="delete-button btn btn-outline-secondary" id="delete-button-${numberOfElement}">Delete</button>
-            </tr>
         `;
         } else {
             row.innerHTML = `
-            <tr class="something">
             <td>${artistValue}</td>
             <td>${albumValue}</td>
             <td><a href="${linkValue}">Link</a></td>
             <button class="copy-button btn btn-outline-secondary" id="copy-button-${numberOfElement}">Copy Info</button>
             <button class="delete-button btn btn-outline-secondary" id="delete-button-${numberOfElement}">Delete</button>
-            </tr>
         `;
         }
+        row.classList.add('album-item');
+        row.id = `album-item-${numberOfElement}`;
 
         listOfItems.appendChild(row);
     }

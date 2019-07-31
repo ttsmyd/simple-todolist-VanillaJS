@@ -22,22 +22,24 @@ class UI {
             <td>${artistValue}</td>
             <td>${albumValue}</td>
             <td></td>
-            <button class="copy-button btn btn-outline-secondary" id="copy-button-${numberOfElement}">Copy Info</button>
-            <button class="delete-button btn btn-outline-secondary" id="delete-button-${numberOfElement}">Delete</button>
+            <button class="copy-button btn btn-outline-secondary">Copy Info</button>
+            <button class="delete-button btn btn-outline-secondary">Delete</button>
         `;
         } else {
             row.innerHTML = `
             <td>${artistValue}</td>
             <td>${albumValue}</td>
             <td><a href="${linkValue}">Link</a></td>
-            <button class="copy-button btn btn-outline-secondary" id="copy-button-${numberOfElement}">Copy Info</button>
-            <button class="delete-button btn btn-outline-secondary" id="delete-button-${numberOfElement}">Delete</button>
+            <button class="copy-button btn btn-outline-secondary">Copy Info</button>
+            <button class="delete-button btn btn-outline-secondary">Delete</button>
         `;
         }
         row.classList.add('album-item');
         row.id = `album-item-${numberOfElement}`;
 
-        listOfItems.appendChild(row);
+        const elementBefore =  document.getElementById(`album-item-${numberOfElement - 1}`);
+
+        listOfItems.insertBefore(row, elementBefore);
     }
 
     static clearInputs() {
@@ -56,9 +58,11 @@ class UI {
         let allItems = document.querySelectorAll('.album-item');
         console.log('allItems');
         console.log(allItems);
+        console.log('cycle');
 
-        for (let i = idOfItem; i < allItems.length; i++) {
-            allItems[i].id = `album-item-${i}`;
+        //for invers list in UI
+        for (let i = 0; i < allItems.length - idOfItem; i++) {
+            allItems[i].id = `album-item-${allItems.length - i - 1}`;
         }
 
 

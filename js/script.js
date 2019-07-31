@@ -47,16 +47,26 @@ class UI {
     }
 
     static deleteItemView(button, idOfItem) {
+        console.log('parent elemen');
+        console.log(button.parentElement.id);
         button.parentElement.remove();
         let infoStorage = storage.getAllStorageInfo();
         console.log('idOfItem');
         console.log(idOfItem);
+        let allItems = document.querySelectorAll('.album-item');
+        console.log('allItems');
+        console.log(allItems);
 
-        let allButtons = document.querySelectorAll('.delete-button');
-
-        for (let i = idOfItem; i < allButtons.length; i++) {
-            allButtons[i].id = `delete-button-${i}`;
+        for (let i = idOfItem; i < allItems.length; i++) {
+            allItems[i].id = `album-item-${i}`;
         }
+
+
+        // let allButtons = document.querySelectorAll('.delete-button');
+        //
+        // for (let i = idOfItem; i < allButtons.length; i++) {
+        //     allButtons[i].id = `delete-button-${i}`;
+        // }
         console.log(document.querySelectorAll('.delete-button'));
         console.log(document.querySelectorAll('.delete-button').length);
 
@@ -193,7 +203,6 @@ musicForm.addEventListener('submit', function (e) {
 });
 
 musicForm.addEventListener('paste', function (e) {
-    console.log('[aste');
     setTimeout(function () {
         let artistInput = document.getElementById('artist').value;
         if (artistInput.indexOf(' — ') > 0) {
@@ -229,10 +238,9 @@ albumList.addEventListener('click', function (e) {
 
 function filterAlbumListButton(button) {
     const typeOfButton = button.classList;
+    const idOfItem = +button.parentElement.id.replace(/album-item-/, '');
     if (typeOfButton.contains('delete-button')) {
-        const idOfItem = +button.getAttribute('id').replace(/delete-button-/, '');
         console.log('id Item before deleting ' + idOfItem);
-        // console.log(idOfItem.replace(/delete-button-/, ''));
         UI.deleteItemView(button, idOfItem);
         storage.deleteItem(idOfItem);
         return;

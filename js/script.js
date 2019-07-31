@@ -23,8 +23,8 @@ class UI {
             <td>${artistValue}</td>
             <td>${albumValue}</td>
             <td></td>
-            <button class="copy-button btn btn-outline-secondary" id="${numberOfElement}">Copy Info</button>
-            <button class="delete-button btn btn-outline-secondary" id="${numberOfElement}">Delete</button>
+            <button class="copy-button btn btn-outline-secondary" id="copy-button-${numberOfElement}">Copy Info</button>
+            <button class="delete-button btn btn-outline-secondary" id="delete-button-${numberOfElement}">Delete</button>
             </tr>
         `;
         } else {
@@ -33,8 +33,8 @@ class UI {
             <td>${artistValue}</td>
             <td>${albumValue}</td>
             <td><a href="${linkValue}">Link</a></td>
-            <button class="copy-button btn btn-outline-secondary" id="${numberOfElement}">Copy Info</button>
-            <button class="delete-button btn btn-outline-secondary" id="${numberOfElement}">Delete</button>
+            <button class="copy-button btn btn-outline-secondary" id="copy-button-${numberOfElement}">Copy Info</button>
+            <button class="delete-button btn btn-outline-secondary" id="delete-button-${numberOfElement}">Delete</button>
             </tr>
         `;
         }
@@ -54,10 +54,21 @@ class UI {
         console.log('idOfItem');
         console.log(idOfItem);
 
+        let allButtons = document.querySelectorAll('.delete-button');
 
-        for (let i = idOfItem + 1; i < infoStorage.length; i++) {
-            document.querySelector(`[id="${i}"]`).id = i - 1;
+        for (let i = idOfItem; i < allButtons.length; i++) {
+            allButtons[i].id = i;
         }
+        console.log(document.querySelectorAll('.delete-button'));
+        console.log(document.querySelectorAll('.delete-button').length);
+
+
+        // for (let i = idOfItem + 1; i < infoStorage.length; i++) {
+        //     console.log(`i = ${i}`);
+        //     console.log(document.querySelector(`[id="delete-button-${i}"]`));
+        //     console.log(document.querySelector(`[id="delete-button-${i}"]`).id);
+        //     document.querySelector(`[id="delete-button-${i}"]`).id = i - 1;
+        // }
         console.log('kek');
     }
 }
@@ -166,7 +177,6 @@ musicForm.addEventListener('submit', function (e) {
     let albumInput = document.getElementById('album').value;
     let linkInput = document.getElementById('link').value;
     let isValidLink = validURL(linkInput);
-    console.log(isValidLink);
     if (artistInput === '' && albumInput === '' && linkInput === '') {
         alert('Please, enter correct information about album');
         return;
@@ -181,7 +191,6 @@ musicForm.addEventListener('submit', function (e) {
 
     UI.addItemToTheList(albumItem, storage.getAllStorageInfo().length);
     storage.addItem(albumItem);
-    // console.log('length ' + (storage.getAllStorageInfo().length + 1));
     UI.clearInputs();
 });
 
@@ -222,9 +231,10 @@ albumList.addEventListener('click', function (e) {
 
 function filterAlbumListButton(button) {
     const typeOfButton = button.classList;
-    const idOfItem = +button.getAttribute('id');
-    console.log('filter');
     if (typeOfButton.contains('delete-button')) {
+        const idOfItem = +button.getAttribute('id').replace(/delete-button-/, '');
+        console.log('id Item before deleting ' + idOfItem);
+        // console.log(idOfItem.replace(/delete-button-/, ''));
         UI.deleteItemView(button, idOfItem);
         storage.deleteItem(idOfItem);
         return;
@@ -233,22 +243,6 @@ function filterAlbumListButton(button) {
         storage.copyItemToClipboard(idOfItem);
     }
 
-    // let range = document.createRange();
-    // range.selectNode(test);
-    // window.getSelection().addRange(range);
-    //
-    // try {
-    //     // Теперь, когда мы выбрали текст ссылки, выполним команду копирования
-    //     var successful = document.execCommand('copy');
-    //     var msg = successful ? 'successful' : 'unsuccessful';
-    //     console.log('Copy email command was ' + msg);
-    // } catch(err) {
-    //     console.log('Oops, unable to copy');
-    // }
-    //
-    // // Снятие выделения - ВНИМАНИЕ: вы должны использовать
-    // // removeRange(range) когда это возможно
-    // window.getSelection().removeAllRanges();
 
 }
 

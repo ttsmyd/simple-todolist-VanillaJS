@@ -165,7 +165,6 @@ class Storage {
             }
         }
         inserTextIntoClipboard(finalString);
-
     }
 
     getItemById(idOfItem) {
